@@ -17,14 +17,29 @@ module.exports = {
     },
     registerUser: function(req, res, next) {
       let {email, username, password} = req.body;
+      let errors = [];
 
-
-      User.findOne({ email: email })
-        .then(function(user){
+      if (!username || !email || !password ) {
+        errors.push({ msg: 'Please enter all fields' });
+      }
+    
+      if (password.length < 6) {
+        errors.push({ msg: 'Password must be at least 6 characters' });
+      }
+    
+      if (errors.length > 0) {
+        res.render('user/register', {
+          errors,
+          username,
+          email
+        });
+      } else {
+        User.findOne({ email: email })
+          .then(function(user){
 
             if(user){
                 // Reroutes to registration page
-                res.redirect("/user/signup");
+                res.redirect("/user/register");
             } else {
                 // Create a new 'User' using our model
                 const newUser = new User({
@@ -47,7 +62,8 @@ module.exports = {
                     });
                 });
             }
-    });
+          });
+      }
     }
     
   };

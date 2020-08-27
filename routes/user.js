@@ -4,11 +4,11 @@ const passport = require('passport');
 const { forwardAuthenticated, registerUser } = require('../middleware/auth');
 
 
-router.get("/signup", forwardAuthenticated, (req, res) => {
-    res.render("user/signup");
+router.get("/register", forwardAuthenticated, (req, res) => {
+    res.render("user/register");
 });
 
-router.post("/signup", registerUser);
+router.post("/register", registerUser);
 
 router.get("/login", (req, res) => {
     res.render("user/login");
