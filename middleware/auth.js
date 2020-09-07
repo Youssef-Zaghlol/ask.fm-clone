@@ -6,7 +6,6 @@ module.exports = {
       if (req.isAuthenticated()) {
         return next();
       }
-      req.flash('error_msg', 'Please log in to view that resource');
       res.redirect('/users/login');
     },
     forwardAuthenticated: function(req, res, next) {
@@ -20,17 +19,17 @@ module.exports = {
       let errors = [];
 
       if (!username || !email || !password ) {
-        errors.push({ msg: 'Please enter all fields' });
+        errors.push( 'Please enter all fields' );
       }
 
       const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
       if(!(emailRegexp.test(email))) {
-        errors.push({msg: "Email must be in correct format"});
+        errors.push("Email must be in correct format");
       }
     
       if (password.length < 6) {
-        errors.push({ msg: 'Password must be at least 6 characters' });
+        errors.push('Password must be at least 6 characters');
       }
     
       if (errors.length > 0) {
@@ -41,14 +40,24 @@ module.exports = {
           username,
           email
         });
+        next();
+
       } else {
         User.findOne({ email: email })
           .then(function(user){
 
             if(user){
+                errors.push("This email is already taken");
+
                 // Reroutes to registration page
-                res.redirect("/user/register");
-            } else {
+                res.render('user/register', {
+                  errors,
+                  username,
+                  email
+                });
+                next();
+
+              } else {
                 // Create a new 'User' using our model
                 const newUser = new User({
                     email: email,
@@ -64,6 +73,7 @@ module.exports = {
                         // Saves password to mongoDB database
                         newUser.save().then(function(){
                             res.redirect('/user/login');
+                            next();
                         }).catch(function(err){
                             console.log(err);
                         });

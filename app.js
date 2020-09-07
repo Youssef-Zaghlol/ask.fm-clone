@@ -3,7 +3,6 @@
 // all requirements
 const express = require("express");
 const mongoose = require("mongoose");
-const flash = require("connect-flash")
 const ejs = require("ejs");
 const passport = require("passport");
 const bodyParser = require("body-parser");
@@ -43,18 +42,6 @@ app.use(passport.session());
 
 // set static folder
 app.use(express.static("/public"));
-
-// flash middleware
-app.use(flash());
-
-// global Vars
-app.use(function(req, res, next){
-    // res.locals.currentUser = req.user;
-    res.locals.error = req.flash("error");
-    res.locals.error_msg = req.flash("error_msg");
-    res.locals.success_msg = req.flash("success_msg");
-    next();
-});
 
 //The routes
 app.get("/", (req, res) => {
