@@ -20,8 +20,8 @@ require('./middleware/passport')(passport);
 // app setup
 mongoose.connect("mongodb://localhost/ask-fm", { useNewUrlParser: true, useUnifiedTopology: true});
 
-// setting the view engine
 app.set("view engine", "ejs");
+app.use(express.static("./public"));
 
 // body Parser middleware
 app.use(bodyParser.json());
@@ -50,7 +50,7 @@ app.use(flash());
 // global Vars
 app.use(function(req, res, next){
     // res.locals.currentUser = req.user;
-    res.locals.error = req.flash("error")
+    res.locals.error = req.flash("error");
     res.locals.error_msg = req.flash("error_msg");
     res.locals.success_msg = req.flash("success_msg");
     next();

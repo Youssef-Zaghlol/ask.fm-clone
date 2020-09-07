@@ -22,12 +22,20 @@ module.exports = {
       if (!username || !email || !password ) {
         errors.push({ msg: 'Please enter all fields' });
       }
+
+      const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+      if(!(emailRegexp.test(email))) {
+        errors.push({msg: "Email must be in correct format"});
+      }
     
       if (password.length < 6) {
         errors.push({ msg: 'Password must be at least 6 characters' });
       }
     
       if (errors.length > 0) {
+        res.locals.error = errors
+
         res.render('user/register', {
           errors,
           username,

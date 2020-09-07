@@ -1,21 +1,24 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Main Page</title>
-    </head>
+<%- include("../partials/header") %>
 
-    <body>
         
         <h1>Sign up</h1>
 
         <form action="/user/register" method="POST">
             <label for="email">email</label>
             <br>
-            <input type="email" name="email" id="email">
+            <% if(email){ %>
+                <input type="email" name="email" id="email" placeholder="email" value=<%= email %>>
+            <% } else{ %>
+                <input type="email" name="email" id="email" placeholder="email">
+            <% } %>
             <br>
             <label for="username">username</label>
             <br>
-            <input type="text" name="username" placeholder="username">
+            <% if(username){ %>
+                <input type="text" name="username" placeholder="username" value=<%= username %>>
+            <% } else{ %>
+                <input type="text" name="username" placeholder="username">
+            <% } %>
             <br>
             <label for="password">username</label>
             <br>
@@ -24,5 +27,4 @@
             <button>register</button>
         </form>
 
-    </body>
-</html>
+<%- include("../partials/footer") %>
