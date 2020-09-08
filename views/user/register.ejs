@@ -5,19 +5,11 @@
         <form action="/user/register" method="POST">
             <label for="email">email</label>
             <br>
-            <% if(email){ %>
-                <input type="email" name="email" id="email" placeholder="email" value=<%= email %>>
-            <% } else{ %>
-                <input type="email" name="email" id="email" placeholder="email">
-            <% } %>
+            <input type="email" name="email" id="email" placeholder="email">
             <br>
             <label for="username">username</label>
             <br>
-            <% if(username){ %>
-                <input type="text" name="username" placeholder="username" value=<%= username %>>
-            <% } else{ %>
-                <input type="text" name="username" placeholder="username">
-            <% } %>
+            <input type="text" name="username" placeholder="username">
             <br>
             <label for="password">username</label>
             <br>

@@ -37,11 +37,13 @@
 
       <div id="myContainer" class="container-sm">
 
-        <% for(var i=0; i < errors.length; i++) { %>
+
+        <% if(errors) {
+        for(var i=0; i < errors.length; i++) { %>
           <div class="alert alert-danger" role="alert">
                 <%= errors[i] %>
             </div>
-        <% } %>
+        <% } } %>
     
         <% if(1 < 0){ %>
             <div class="alert alert-success" role="alert">

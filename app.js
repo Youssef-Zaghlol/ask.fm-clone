@@ -45,7 +45,7 @@ app.use(express.static("/public"));
 
 //The routes
 app.get("/", (req, res) => {
-    res.render("index");
+    res.render("index" , {errors: false});
     console.info(res.locals);
 });
 
