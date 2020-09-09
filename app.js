@@ -1,72 +1,47 @@
 "use strict";
 
-// all requirements
-const express = require("express");
-const mongoose = require("mongoose");
-const flash = require("connect-flash")
-const ejs = require("ejs");
-const passport = require("passport");
-const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
-const session = require("express-session"); 
-const app = express();
+const express        = require("express");
+const app            = express();
+const bodyParser     = require("body-parser");
+const mongoose       = require("mongoose");
+const passport       = require("passport");
+const LocalStrategy  = require("passport-local");
+const flash          = require("connect-flash");
+const User           = require("./models/user");
 
-// requireing routes
-const userRoutes = require("./routes/user");
+mongoose.connect("mongodb://localhost/ask-fm", {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true});
 
-// Passport Config
-require('./middleware/passport')(passport);
 
 // app setup
-mongoose.connect("mongodb://localhost/ask-fm", { useNewUrlParser: true, useUnifiedTopology: true});
-
-// setting the view engine
+app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
-
-// body Parser middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-
-// Cookies middleware
-app.set('trust proxy', 1); // trust first proxy
-app.use(session({
-  secret: 'keyboard cat',
-  resave: true,
-  saveUninitialized: true,
-  cookie: { secure: true }
-}));
-
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
-
-// set static folder
-app.use(express.static("/public"));
-
-// flash middleware
+app.use(express.static(__dirname + "/public"));
 app.use(flash());
 
-// global Vars
+// PASSSPORT config
+app.use(require("express-session")({
+    secret: "sdrtfyguhnjm",
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(function(req, res, next){
-    // res.locals.currentUser = req.user;
-    res.locals.error = req.flash("error")
-    res.locals.error_msg = req.flash("error_msg");
-    res.locals.success_msg = req.flash("success_msg");
+    res.locals.currentUser = req.user;
+    res.locals.error = req.flash("error");
+    res.locals.success = req.flash("success");
     next();
 });
 
-//The routes
-app.get("/", (req, res) => {
-    res.render("index");
-    console.info(res.locals);
-});
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
-app.use("/user", userRoutes)
+// Routes
+const indexRoutes = require("./routes/index");
+app.use(indexRoutes);
 
-
-const url = process.env.PORT || "3000";
-app.listen(url, (err) => {
-    if(err) console.log(err);
-    else console.log("Server started");
+app.listen(process.env.PORT || "3000", function(err){
+    if(err) throw err
+    console.log("Server Is Running");
 });
