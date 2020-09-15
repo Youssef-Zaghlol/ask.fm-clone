@@ -4,8 +4,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const User = require("../models/user");
-const {userValidator} = require("../middleware/index");
-const user = require("../models/user");
+const {userValidator, isLoggedIn} = require("../middleware/index");
 
 // The index page
 router.get("/", function(req, res){
@@ -23,10 +22,10 @@ router.get("/login", (req ,res) => {
     res.render("login");
 });
 
-router.post("/register", (req, res) => {
+router.post("/register", (req, res, next) => {
     let {username, password} = req.body;
-    
-    userValidator(req, res, username, password);
+
+    userValidator(req, res, username, password, "/register");
 
         User.find({username: username}, user => {
             if(user) {
@@ -47,20 +46,35 @@ router.post("/register", (req, res) => {
                     }
                 });
             }
-    });
+        });
 });
 
-router.post("/login", 
-    passport.authenticate("local", {
-        successRedirect: "/",
-        successFlash: "Welcome back",
-        failureRedirect: "/login",
-        failureFlash: "Username or passwor dmust be wrong"
-}));
+router.post("/login", (req, res, next) => {
+    let username = req.body.usernmae || false;
+    let password = req.body.password || false;
+    console.log(req.body.vehicle1)
 
+    userValidator(req, res, username, password, "/login");
 
+    passport.authenticate("local", (err, user, info) => {
+        if(err){
+            req.flash("error", "Something went wrong, please try again");
+            return res.redirect("/login");
+        } 
+        req.logIn(user, function(err) {
+            if (err) {
+                req.flash("error", "Username or password must be wrong");
+                return res.redirect("/login");
+            }
+            else {
+                req.flash("success", "Welcome back");
+                return res.redirect("/question/myQuestion")
+            }
+        });
+    })(req, res, next);
+});
 
-router.get("/logout", function(req ,res){
+router.get("/logout", isLoggedIn, function(req ,res){
     req.logOut();
     req.flash("success", "Logged You Out")
     res.redirect("/");

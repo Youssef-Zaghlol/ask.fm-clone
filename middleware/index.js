@@ -1,7 +1,16 @@
 "use strict";
 
 const middleware = {
-    userValidator: (req, res, username, password) => {
+    isLoggedIn: function(req, res, next){
+        if(req.isAuthenticated()){
+            return next();
+        }
+        else{
+            req.flash("error", "You need to be logged in to do that");
+            return res.redirect("/login");
+        }
+    },
+    userValidator: (req, res, username, password, redirection) => {
         let errs = 0;
 
         if(username.length < 3) {
@@ -22,7 +31,7 @@ const middleware = {
         }
 
         if(errs > 0){
-            res.render("register");
+            res.redirect(redirection);
         }
     }
 }

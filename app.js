@@ -39,7 +39,10 @@ passport.deserializeUser(User.deserializeUser());
 
 // Routes
 const indexRoutes = require("./routes/index");
+const questionsRoutes = require("./routes/question");
+
 app.use(indexRoutes);
+app.use("/question", questionsRoutes);
 
 app.listen(process.env.PORT || "3000", function(err){
     if(err) throw err
