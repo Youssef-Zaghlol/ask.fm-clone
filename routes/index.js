@@ -25,8 +25,9 @@ router.get("/login", (req ,res) => {
 router.post("/register", (req, res, next) => {
     let {username, password} = req.body;
 
-    userValidator(req, res, username, password, "/register");
-
+    if  ( 0 < userValidator(req, res, username, password)) {
+        res.redirect("/register");
+    } else{
         User.find({username: username}, user => {
             if(user) {
                 req.flash("error", "This username is already taken");
@@ -47,6 +48,7 @@ router.post("/register", (req, res, next) => {
                 });
             }
         });
+    }
 });
 
 router.post("/login", (req, res, next) => {
@@ -54,24 +56,26 @@ router.post("/login", (req, res, next) => {
     let password = req.body.password || false;
     console.log(req.body.vehicle1)
 
-    userValidator(req, res, username, password, "/login");
-
-    passport.authenticate("local", (err, user, info) => {
-        if(err){
-            req.flash("error", "Something went wrong, please try again");
-            return res.redirect("/login");
-        } 
-        req.logIn(user, function(err) {
-            if (err) {
-                req.flash("error", "Username or password must be wrong");
+    if  ( 0 < userValidator(req, res, username, password)) {
+        res.redirect("/register");
+    } else {
+        passport.authenticate("local", (err, user, info) => {
+            if(err){
+                req.flash("error", "Something went wrong, please try again");
                 return res.redirect("/login");
-            }
-            else {
-                req.flash("success", "Welcome back");
-                return res.redirect("/question/myQuestion")
-            }
-        });
-    })(req, res, next);
+            } 
+            req.logIn(user, function(err) {
+                if (err) {
+                    req.flash("error", "Username or password must be wrong");
+                    return res.redirect("/login");
+                }
+                else {
+                    req.flash("success", "Welcome back");
+                    return res.redirect("/question/myQuestion")
+                }
+            });
+        })(req, res, next);
+    }
 });
 
 router.get("/logout", isLoggedIn, function(req ,res){

@@ -10,7 +10,7 @@ const middleware = {
             return res.redirect("/login");
         }
     },
-    userValidator: (req, res, username, password, redirection) => {
+    userValidator: (req, res, username, password) => {
         let errs = 0;
 
         if(username.length < 3) {
@@ -31,7 +31,7 @@ const middleware = {
         }
 
         if(errs > 0){
-            res.redirect(redirection);
+            return errs;
         }
     }
 }
