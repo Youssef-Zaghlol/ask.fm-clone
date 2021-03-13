@@ -8,15 +8,14 @@ var QuestionSchema = new mongoose.Schema({
     },
     anonymous: {
         type: Boolean,
-        requierd: true
+        required: true
     },
     user: {
         id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         },
-        username: String,
-        required: false
+        username: String
     },
     time : {
         type : Date, 
