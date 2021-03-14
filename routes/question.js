@@ -8,7 +8,17 @@ const {isLoggedIn} = require("../middleware/index");
 
 
 router.get("/myQuestion", isLoggedIn, (req, res) => {
-    res.render("./question/myQuestion");
+    // search for questions of the user
+    Question.find({user: {id: req.user._id, username: req.user.username}})
+    .limit(10)
+    .exec((err, questions) => {
+        if(err) {
+            console.log(err);
+            req.flash("error", "Something happed please try again");
+        }
+
+        res.render("./question/myQuestion", {questions});
+    });
 });
 
 router.get("/add", isLoggedIn, (req, res) => {

@@ -8,6 +8,7 @@ const passport       = require("passport");
 const LocalStrategy  = require("passport-local");
 const flash          = require("connect-flash");
 const User           = require("./models/user");
+const seedDB         = require("./seeds");
 
 mongoose.connect("mongodb://localhost/ask-fm", {useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true});
 
@@ -36,6 +37,9 @@ app.use(function(req, res, next){
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+// seed the database
+// seedDB();
 
 // Routes
 const indexRoutes = require("./routes/index");
