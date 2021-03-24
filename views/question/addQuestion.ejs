@@ -1,0 +1,16 @@
+<%- include("../partials/header") %>
+
+<h1>Add a question</h1>
+
+<form action="/question/add" method="POST">
+    <label for="content">Type your question</label>
+    <br>
+    <textarea id="content" name="content" rows="4" cols="50">your question</textarea>
+    <br>
+    <label for="anonymous">anonymous</label>
+    <input type="checkbox" name="anonymous" id="anonymous">
+    <br>
+    <button>Submit</button>
+</form>
+
+<%- include("../partials/footer") %>
