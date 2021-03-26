@@ -7,6 +7,26 @@ const Question = require("../models/question");
 const {isLoggedIn} = require("../middleware/index");
 
 
+router.get("/recentQuestions", isLoggedIn, (req, res) => {
+    // search for questions of the user
+    Question.find({})
+    .limit(20)
+    .exec((err, questions) => {
+        if(err) {
+            console.log(err);
+            req.flash("error", "Something happed please try again");
+        } else{
+            questions.forEach( question => {
+                if(question.anonymous === true) {
+                    question.user.username = "anonymous";
+                }
+            });
+        }
+
+        res.render("./question/recentQuestions", {questions});
+    });
+});
+
 router.get("/myQuestion", isLoggedIn, (req, res) => {
     // search for questions of the user
     Question.find({user: {id: req.user._id, username: req.user.username}})

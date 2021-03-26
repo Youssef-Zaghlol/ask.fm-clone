@@ -115,8 +115,8 @@ function seedDB(){
                             console.log("removed questoins");
 
                             // adding the questions
-                            data.forEach(function(seed){
-                                Question.create(seed, function(err, question){
+                            data.forEach( seed => {
+                                Question.create(seed, (err, question) => {
                                     if(err) {
                                         console.log(err);
                                     } else {

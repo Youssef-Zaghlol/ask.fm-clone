@@ -42,7 +42,7 @@ router.post("/register", (req, res, next) => {
                     } else {
                         passport.authenticate("local")(req, res, function(){
                             req.flash("success", "Welcome to Ask.fm " + user.username);
-                            res.redirect("/");
+                            res.redirect("/recentQuestions");
                         });
                     }
                 });
@@ -71,7 +71,7 @@ router.post("/login", (req, res, next) => {
                 }
                 else {
                     req.flash("success", "Welcome back");
-                    return res.redirect("/question/myQuestion")
+                    return res.redirect("/question/recentQuestions")
                 }
             });
         })(req, res, next);
